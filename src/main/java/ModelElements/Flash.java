@@ -1,17 +1,14 @@
 package ModelElements;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class Flash {
-    Point3D location;
-    Angle3D angle;
-    Color color;
-    float power;
+    public Point3D Location;
+    public Angle3D Angle;
+    public java.awt.Color color;
+    public float Power;
 
-    public void Rotate(Angle3D grad) {
+    public void rotate(Angle3D angleAction) {
     }
 
-    public void Move(Point3D cm) {
+    public void move(Point3D pointAction){
     }
 }

@@ -2,12 +2,12 @@ package ModelElements;
 
 
 public class Camera {
-    Point3D location;
-    Angle3D angle;
-
-    public void Rotate(Angle3D grad) {
+    public Point3D Location;
+    public Angle3D Angle;
+    public void Rotate(Angle3D angleAction) {
     }
 
-    public void Move(Point3D cm) {
+    public void Move(Point3D pointAction){
+
     }
 }

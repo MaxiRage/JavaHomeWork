@@ -6,23 +6,38 @@ import ModelElements.PoligonalModel;
 import ModelElements.Scene;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ModelStore implements IModelChangeObserver, IModelChanger {
+public class ModelStore implements IModelChanger {
+    public List<PoligonalModel> Models;
+    public List<Scene> Scenes;
+    public List<Flash> Flashes;
+    public List<Camera> Cameras;
+    private List<IModelChangeObserver> ChangeObservers;
 
-    ArrayList<PoligonalModel> Models = new ArrayList<>();
-    ArrayList<Scene> Scenes = new ArrayList<>();
-    ArrayList<Flash> Flashes = new ArrayList<>();
-    ArrayList<Camera> Cameras = new ArrayList<>();
+    public ModelStore(List<IModelChangeObserver> changeObservers) throws Exception {
+        this.ChangeObservers = changeObservers;
 
-    public Scene getScene(int n_scene) {
-        return Scenes.get(n_scene);
+        this.Models = new ArrayList<>();
+        this.Scenes = new ArrayList<>();
+        this.Flashes = new ArrayList<>();
+        this.Cameras = new ArrayList<>();
+
+        Models.add(new PoligonalModel(null));
+        Flashes.add(new Flash());
+        Cameras.add(new Camera());
+        Scenes.add(new Scene(0,Models,Flashes, Cameras));
+    }
+
+
+    public Scene GetScena(int ID) {
+        for (Scene scene : Scenes)
+            if (scene.ID == ID)
+                return scene;
+        return null;
     }
 
     @Override
-    public void NotifyChange() {
-    }
-
-    @Override
-    public void ApplyUpdateModel() {
+    public void notifyChange(IModelChanger sender) {
     }
 }
