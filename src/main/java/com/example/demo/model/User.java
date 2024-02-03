@@ -33,4 +33,13 @@ public enum User {;
             String role;
         }
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserDTO {
+        String name;
+        String lastName;
+    }
 }
