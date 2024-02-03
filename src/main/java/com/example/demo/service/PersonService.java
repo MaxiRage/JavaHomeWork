@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Person;
+import com.example.demo.model.entity.Person;
 import com.example.demo.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +20,9 @@ public class PersonService {
                 .build());
     }
 
-    public void deletePerson(Person person) {
-        personRepository.delete(person);
+    public void deletePerson(int id) {
+        Optional<Person> optUser = personRepository.findById(id);
+        optUser.ifPresent(personRepository::delete);
     }
 
     public Optional<Person> getPerson(int id) {
