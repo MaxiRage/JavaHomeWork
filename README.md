@@ -1,9 +1,64 @@
-Maven и Gradle являются популярными сборщиками проектов с открытым исходным кодом, используемыми для обработки зависимостей, компиляции кода, создания артефактов и управления процессом сборки. Оба они предоставляют возможность автоматической сборки проектов на основе конфигурационных файлов, а также интеграцию с различными инструментами и языками программирования.
+```yaml
+deploy to preprod:
+  stage: deploy
+  variables:
+    TARGET_ENV: preprod
+    MyLogin: "Preprod Rage"
+  script:
+    - echo "Do your deploy here to ${TARGET_ENV}"
+    - echo ${DB_SERVER}
+    - echo "MyLogin"
+    - echo $MyLogin
+    - echo "MyPassword"
+    - echo $MyPassword
+  only:
+    - main
+  environment:
+    name: preprod
+```
 
-Архитектура: Maven использует модель “проектор-построитель”, где есть отдельный проектор, который читает конфигурацию и создает задачи для построителя, который выполняет фактическую работу по сборке. Gradle - это основанный на задачах инструмент сборки, который позволяет пользователям определять каждый этап сборки непосредственно в самом конфигурационном файле.
+```yaml
+deploy to production:
+  stage: deploy
+  variables:
+    TARGET_ENV: production
+    MyLogin: "Prod Rage"
+  script:
+    - echo "Do your deploy here to ${TARGET_ENV}"
+    - echo ${DB_SERVER}
+    - echo "MyLogin"
+    - echo $MyLogin
+    - echo "MyPassword"
+    - echo $MyPassword
+  only:
+    - main
+  environment:
+    name: production
+```
+![img_3.png](img/img_3.png)
+![img_1.png](img/img_1.png)
+![img_2.png](img/img_2.png)
+![img_4.png](img/img_4.png)
 
-Конфигурация: Maven использует XML-файлы для определения конфигурации проекта, в то время как Gradle использует язык Groovy, который встроен в сам инструмент и позволяет более выразительную и мощную конфигурацию.
 
-Версионирование зависимостей: В Maven используется система управления версиями зависимостей с предопределенными правилами, такими как “наименьший общий знаменатель” (lowest common denominator) и “обратная совместимость”. В Gradle есть более гибкая система, которая позволяет пользователям контролировать процесс обновления зависимостей и управлять конфликтами версий.
+```yaml
+# ------- Cancel -------
+cancel:
+  stage: stop previous jobs
+  image: everpeace/curl-jq
+  script:
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "main" ]
+        then
+          (
+            echo "Cancel old pipelines from the same branch except last"
+            OLD_PIPELINES=$( curl -s -H "PRIVATE-TOKEN: $RUNNER_TOKEN" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/pipelines?ref=${CI_COMMIT_REF_NAME}&status=running" \
+                  | jq '.[] | .id' | tail -n +2 )
+                  for pipeline in ${OLD_PIPELINES}; \
+                      do echo "Killing ${pipeline}" && \
+                        curl -s --request POST -H "PRIVATE-TOKEN: ${RUNNER_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/pipelines/${pipeline}/cancel"; done
+          ) || echo "Canceling old pipelines (${OLD_PIPELINES}) failed"
+      fi
+```
 
-В общем, оба инструмента являются мощными и полезными, но каждый имеет свои особенности и может быть предпочтительным в зависимости от потребностей и предпочтений разработчика.
+![img_5.png](img/img_5.png)
